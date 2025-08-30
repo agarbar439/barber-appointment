@@ -37,6 +37,8 @@ Email: Spring Boot Starter Mail
 ✅ Confirm or cancel appointments manually.
 
 ## 📌 Database Structure (MySQL)
+`````
+create database barber_db;
 USE barber_db;
 
 CREATE TABLE services (
@@ -68,3 +70,4 @@ password VARCHAR(255) NOT NULL,
 email VARCHAR(150) UNIQUE NOT NULL,
 role ENUM('ADMIN') DEFAULT 'ADMIN'
 );
+`````
