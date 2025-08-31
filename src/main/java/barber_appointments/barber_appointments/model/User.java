@@ -18,6 +18,11 @@ public class User {
     @Column(unique = true, nullable = false, length = 50)
     private String username;
 
+    // Unique email, not null, max length 100
+    @Column(unique = true, nullable = false, length = 100)
+    public String email;
+
+
     // Not null password
     @Column(nullable = false)
     private String password; // guardada en BCrypt
