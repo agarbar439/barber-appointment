@@ -6,7 +6,7 @@ import lombok.*;
 @Entity
 @Table(name = "services")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
-public class Service {
+public class BarberService {
 
     // Primary key auto-incremental
     @Id

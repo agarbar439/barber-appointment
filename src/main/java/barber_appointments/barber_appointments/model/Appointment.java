@@ -5,11 +5,9 @@ import barber_appointments.barber_appointments.model.enums.AppointmentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.sql.Time;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Date;
+
 @Entity
 @Table(name = "appointments")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
@@ -31,7 +29,7 @@ public class Appointment {
     // Service relationship, not null
     @ManyToOne(fetch = FetchType.LAZY) // relación N citas → 1 servicio
     @JoinColumn(name = "service_id", nullable = false)
-    private Service service;
+    private BarberService service;
 
     // Appointment date and time, not null
     @Column(nullable = false)

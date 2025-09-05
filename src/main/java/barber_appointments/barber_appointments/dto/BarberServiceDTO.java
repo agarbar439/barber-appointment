@@ -4,7 +4,7 @@ import lombok.Data;
 
 // DTO for services (used in requests and responses)
 @Data
-public class ServiceDTO {
+public class BarberServiceDTO {
 
     private Long id;
     private String name;

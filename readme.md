@@ -3,7 +3,7 @@
 ## Description
 
 A web application for a barbershop with a React frontend and Spring Boot backend.
-Customers can book appointments without registering, while admins manage services and bookings through a control panel.
+Customers can book appointments without registering, while admins manage barberServices and bookings through a control panel.
 
 ## 📌 Technologies Used
 
@@ -20,11 +20,11 @@ Email: Spring Boot Starter Mail
 ## 📌 Main Features
 👤 Customer
 
-✅ Book appointments by selecting a service, date, and time.
+✅ Book appointments by selecting a barberService, date, and time.
 
 ✅ Receive a confirmation email with links to confirm or cancel the appointment.
 
-✅ View available services.
+✅ View available barberServices.
 
 ## 🧑‍💼 Admin
 
@@ -32,7 +32,7 @@ Email: Spring Boot Starter Mail
 
 ✅ Filter appointments by status (Pending, Confirmed, Cancelled).
 
-✅ Create, edit, and delete barbershop services.
+✅ Create, edit, and delete barbershop barberServices.
 
 ✅ Confirm or cancel appointments manually.
 
@@ -41,7 +41,7 @@ Email: Spring Boot Starter Mail
 create database barber_db;
 USE barber_db;
 
-CREATE TABLE services (
+CREATE TABLE barberServices (
 id BIGINT AUTO_INCREMENT PRIMARY KEY,
 name VARCHAR(100) NOT NULL,
 description VARCHAR(255),
@@ -60,7 +60,7 @@ status ENUM('PENDING', 'CONFIRMED', 'CANCELLED') DEFAULT 'PENDING',
 confirmation_token VARCHAR(255) UNIQUE,
 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-CONSTRAINT fk_service FOREIGN KEY (service_id) REFERENCES services(id)
+CONSTRAINT fk_service FOREIGN KEY (service_id) REFERENCES barberServices(id)
 );
 
 CREATE TABLE users (

@@ -4,7 +4,7 @@ import lombok.Data;
 
 // DTO for appointment requests (from client to server)
 @Data
-public class AppointmetRequestDTO {
+public class AppointmentRequestDTO {
     private String customerName;
     private String customerEmail;
     private Long serviceId; // ID of the service being requested
