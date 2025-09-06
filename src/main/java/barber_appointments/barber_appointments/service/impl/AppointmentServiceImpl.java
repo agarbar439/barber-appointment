@@ -108,7 +108,6 @@ return savedAppointment;
     return true;
     }
 
-
     // Admin only: Delete appointment by ID
     @Override
     public void deleteAppointment(Long id) {
@@ -148,24 +147,58 @@ return savedAppointment;
                 .toList();
     }
 
-
     @Override
     public List<AppointmentClientResponseDTO> getAllAppointmentsForClient() {
         return List.of();
     }
 
+    // Client: Confirm appointment by token
     @Override
     public void confirmAppointment(String token) {
+        Appointment appointment = appointmentRepository.findByConfirmationToken(token)
+                .orElseThrow(() -> new ServiceNotFoundException("Appointment not found"));
+
+        // Only pending appointments can be confirmed
+        if (appointment.getStatus() != AppointmentStatus.PENDING) {
+            throw new IllegalStateException("Only pending appointments can be confirmed");
+        }
+
+        appointment.setStatus(AppointmentStatus.CONFIRMED);
+        appointmentRepository.save(appointment);
 
     }
 
+    // Client: Cancel appointment by token
     @Override
     public void cancelAppointment(String token) {
-
+        Appointment appointment = appointmentRepository.findByConfirmationToken(token)
+                .orElseThrow(() -> new ServiceNotFoundException("Appointment not found"));
+        if (appointment.getStatus() == AppointmentStatus.CANCELLED) {
+            throw new IllegalStateException("Appointment is already canceled");
+        } else {
+            appointment.setStatus(AppointmentStatus.CANCELLED);
+            appointmentRepository.save(appointment);
+        }
     }
 
+    // Client: Reschedule appointment by token
     @Override
     public void rescheduleAppointment(String token, AppointmentRequestDTO request) {
-
+        // Implementation for rescheduling an appointment
+        Appointment appointment = appointmentRepository.findByConfirmationToken(token)
+                .orElseThrow(() -> new ServiceNotFoundException("Appointment not found"));
+        if (appointment.getStatus() == AppointmentStatus.CANCELLED) {
+            throw new IllegalStateException("Cannot reschedule a canceled appointment");
+        } else {
+            // Update appointment details based on the request
+            appointment.setCustomerName(request.getCustomerName());
+            appointment.setCustomerEmail(request.getCustomerEmail());
+            BarberService barberService = barberServiceRepository.findById(request.getServiceId())
+                    .orElseThrow(() -> new ServiceNotFoundException("Service not found"));
+            appointment.setService(barberService);
+            appointment.setDate(LocalDate.parse(request.getDate()));
+            appointment.setTime(java.time.LocalTime.parse(request.getTime()));
+            appointmentRepository.save(appointment);
+        }
     }
 }

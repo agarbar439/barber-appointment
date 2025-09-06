@@ -19,11 +19,33 @@ public class AppointmentController {
 
     private  final AppointmentService appointmentService;
 
+    // Client role
 
     // Client creates a new appointment
     @PostMapping("/appointments")
     public ResponseEntity<AppointmentClientResponseDTO> create(@RequestBody AppointmentRequestDTO request) {
         return ResponseEntity.ok(appointmentService.createAppointment(request));
+    }
+
+    // Confirm appointment by token
+    @PostMapping("/appointments/confirm")
+    public ResponseEntity<String> confirmAppointment(@RequestParam String token) {
+        appointmentService.confirmAppointment(token);
+        return ResponseEntity.ok("Appointment confirmed successfully!");
+    }
+
+    // Cancel appointment by token
+    @PostMapping("/appointments/cancel")
+    public ResponseEntity<String> cancelAppointment(@RequestParam String token) {
+        appointmentService.cancelAppointment(token);
+        return ResponseEntity.ok("Appointment cancelled successfully!");
+    }
+
+    // Reschedule appointment by token
+    @PutMapping("/appointments/reschedule")
+    public ResponseEntity<String> rescheduleAppointment(@RequestParam String token, @RequestBody AppointmentRequestDTO request) {
+        appointmentService.rescheduleAppointment(token, request);
+        return ResponseEntity.ok("Appointment rescheduled successfully!");
     }
 
 
