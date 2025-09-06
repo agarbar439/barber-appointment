@@ -147,9 +147,27 @@ return savedAppointment;
                 .toList();
     }
 
+    // Admin only: Get appointment by ID
     @Override
-    public List<AppointmentClientResponseDTO> getAllAppointmentsForClient() {
-        return List.of();
+    public Optional<AppointmentAdminResponseDTO> getAppointmentById(Long id) {
+        return appointmentRepository.findById(id)
+                .map(appointmentMapper::toAdminResponseDTO);
+    }
+
+    // Admin only: Change appointment status
+    @Override
+    public void changeAppointmentStatus(Long id, String status) {
+        // Get the appointment by ID
+        Appointment appointment = appointmentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Appointment not found"));
+
+        try {
+            AppointmentStatus newStatus = AppointmentStatus.valueOf(status.toUpperCase());
+            appointment.setStatus(newStatus);
+            appointmentRepository.save(appointment);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Invalid status: " + status);
+        }
     }
 
     // Client: Confirm appointment by token

@@ -60,12 +60,27 @@ public class AppointmentController {
         return ResponseEntity.ok(appointmentService.getAllAppointmentsForAdmin(status, date));
     }
 
+    // Get appointment by ID (Admin only)
+    @GetMapping("/admin/appointments/{id}")
+    public ResponseEntity<AppointmentAdminResponseDTO> getAppointmentById(@PathVariable Long id) {
+        return appointmentService.getAppointmentById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     // Delete an appointment by ID (Admin only)
-    @DeleteMapping("/appointments/{id}")
+    @DeleteMapping("/admin/appointments/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         appointmentService.deleteAppointment(id);
         return ResponseEntity.noContent().build(); // 204 No Content
     }
 
+    // Change appointment status (Admin only)
+    @PutMapping("/admin/appointments/{id}/status")
+    public ResponseEntity<String> changeAppointmentStatus(@PathVariable Long id, @RequestBody String status) {
+        appointmentService.changeAppointmentStatus(id, status);
+        return ResponseEntity.ok("Appointment status updated successfully!");
+
+    }
 
 }

@@ -23,11 +23,11 @@ public interface AppointmentService {
     // Obtain all appointments (Admin only)
     List<AppointmentAdminResponseDTO> getAllAppointmentsForAdmin(String status, String date);
 
-    // Obtain all appointmets by date (Admin only)
-   // List<AppointmentAdminResponseDTO> getAllAppointmentsByDate(LocalDate date);
+    // Get an appointment by ID (Admin only)
+     Optional<AppointmentAdminResponseDTO> getAppointmentById(Long id);
 
-    // Client: Obtain all their appointments
-    List<AppointmentClientResponseDTO> getAllAppointmentsForClient();
+     // Change appointment status (Admin only)
+     void changeAppointmentStatus(Long id, String status);
 
     // Confirm appointment by token
     void confirmAppointment(String token);
