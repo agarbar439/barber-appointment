@@ -22,6 +22,9 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     // Search all appointments by a specific date
     List<Appointment> findAllByDate(LocalDate date);
 
+    // Search all appointments by both status and date
+    List<Appointment> findAllByStatusAndDate(AppointmentStatus status, LocalDate date);
+
     // Search for an appointment by its unique confirmation token
     Optional<Appointment> findByConfirmationToken(String token);
 

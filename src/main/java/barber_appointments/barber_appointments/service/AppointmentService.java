@@ -4,6 +4,7 @@ import barber_appointments.barber_appointments.dto.AppointmentAdminResponseDTO;
 import barber_appointments.barber_appointments.dto.AppointmentClientResponseDTO;
 import barber_appointments.barber_appointments.dto.AppointmentRequestDTO;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +21,10 @@ public interface AppointmentService {
     Optional<AppointmentClientResponseDTO> getAppointmentByToken(String token);
 
     // Obtain all appointments (Admin only)
-    List<AppointmentAdminResponseDTO> getAllAppointmentsForAdmin();
+    List<AppointmentAdminResponseDTO> getAllAppointmentsForAdmin(String status, String date);
+
+    // Obtain all appointmets by date (Admin only)
+   // List<AppointmentAdminResponseDTO> getAllAppointmentsByDate(LocalDate date);
 
     // Client: Obtain all their appointments
     List<AppointmentClientResponseDTO> getAllAppointmentsForClient();

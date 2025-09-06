@@ -3,7 +3,6 @@ package barber_appointments.barber_appointments.service.impl;
 import barber_appointments.barber_appointments.dto.AppointmentAdminResponseDTO;
 import barber_appointments.barber_appointments.dto.AppointmentClientResponseDTO;
 import barber_appointments.barber_appointments.dto.AppointmentRequestDTO;
-import barber_appointments.barber_appointments.dto.BarberServiceDTO;
 import barber_appointments.barber_appointments.exceptions.OverlappingBookingsException;
 import barber_appointments.barber_appointments.exceptions.ServiceNotFoundException;
 import barber_appointments.barber_appointments.exceptions.TimeSlotUnavailableException;
@@ -11,12 +10,14 @@ import barber_appointments.barber_appointments.exceptions.WorkingHoursException;
 import barber_appointments.barber_appointments.mapper.AppointmentMapper;
 import barber_appointments.barber_appointments.model.Appointment;
 import barber_appointments.barber_appointments.model.BarberService;
+import barber_appointments.barber_appointments.model.enums.AppointmentStatus;
 import barber_appointments.barber_appointments.repository.AppointmentRepository;
 import barber_appointments.barber_appointments.repository.BarberServiceRepository;
 import barber_appointments.barber_appointments.service.AppointmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -111,7 +112,9 @@ return savedAppointment;
     // Admin only: Delete appointment by ID
     @Override
     public void deleteAppointment(Long id) {
-        this.appointmentRepository.deleteById(id);
+       Appointment appointment = appointmentRepository.findById(id)
+               .orElseThrow(() -> new ServiceNotFoundException("Appointment not found"));
+       appointmentRepository.delete(appointment);
     }
 
     @Override
@@ -119,10 +122,32 @@ return savedAppointment;
         return Optional.empty();
     }
 
+    // Admin only: Get all appointments with optional filtering by status and date
     @Override
-    public List<AppointmentAdminResponseDTO> getAllAppointmentsForAdmin() {
-        return List.of();
+    public List<AppointmentAdminResponseDTO> getAllAppointmentsForAdmin(String status, String date) {
+        List<Appointment> appointments;
+
+        // Filter by status and/or date if provided
+        if (status != null && date != null) {
+            // Find by both status and date
+            appointments = appointmentRepository.findAllByStatusAndDate(
+                    AppointmentStatus.valueOf(status),
+                    LocalDate.parse(date)
+            );
+        } else if (status != null) {
+            appointments = appointmentRepository.findAllByStatus(AppointmentStatus.valueOf(status));
+        } else if (date != null) {
+            appointments = appointmentRepository.findAllByDate(LocalDate.parse(date));
+        } else {
+            appointments = appointmentRepository.findAll();
+        }
+
+        // Map to DTOs and return
+        return appointments.stream()
+                .map(appointmentMapper::toAdminResponseDTO)
+                .toList();
     }
+
 
     @Override
     public List<AppointmentClientResponseDTO> getAllAppointmentsForClient() {
