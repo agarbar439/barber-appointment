@@ -3,7 +3,9 @@ package barber_appointments.barber_appointments.controller;
 import barber_appointments.barber_appointments.dto.AppointmentAdminResponseDTO;
 import barber_appointments.barber_appointments.dto.AppointmentClientResponseDTO;
 import barber_appointments.barber_appointments.dto.AppointmentRequestDTO;
+import barber_appointments.barber_appointments.dto.BarberServiceDTO;
 import barber_appointments.barber_appointments.service.AppointmentService;
+import barber_appointments.barber_appointments.service.BarberServiceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,7 @@ import java.util.List;
 public class AppointmentController {
 
     private  final AppointmentService appointmentService;
+    private final BarberServiceService barberServiceService;
 
     // Client role
 
@@ -46,6 +49,12 @@ public class AppointmentController {
     public ResponseEntity<String> rescheduleAppointment(@RequestParam String token, @RequestBody AppointmentRequestDTO request) {
         appointmentService.rescheduleAppointment(token, request);
         return ResponseEntity.ok("Appointment rescheduled successfully!");
+    }
+
+    // Get all the services
+    @GetMapping("/services")
+    public ResponseEntity<List<BarberServiceDTO>> getAllServices() {
+        return ResponseEntity.ok(barberServiceService.listAllBarberServices());
     }
 
 
@@ -82,5 +91,28 @@ public class AppointmentController {
         return ResponseEntity.ok("Appointment status updated successfully!");
 
     }
+
+    // Delete a service by ID (Admin only)
+    @DeleteMapping("/admin/services/{id}")
+    public ResponseEntity<Void> deleteService(@PathVariable Long id) {
+        barberServiceService.removeBarberService(id);
+        return ResponseEntity.noContent().build(); // 204 No Content
+    }
+
+    // Add a new service (Admin only)
+    @PostMapping("/admin/services")
+    public ResponseEntity<String> addService(@RequestBody BarberServiceDTO serviceDTO) {
+        barberServiceService.addBarberService(serviceDTO.getName(), serviceDTO.getDescription(), serviceDTO.getDurationMinutes(), serviceDTO.getPrice());
+        return ResponseEntity.ok("Service added successfully!");
+    }
+
+    // Update a service by ID (Admin only)
+    @PutMapping("/admin/services/{id}")
+    public ResponseEntity<String> updateService(@PathVariable Long id, @RequestBody BarberServiceDTO serviceDTO) {
+        barberServiceService.updateBarberService(id, serviceDTO.getName(), serviceDTO.getDescription(), serviceDTO.getDurationMinutes(), serviceDTO.getPrice());
+        return ResponseEntity.ok("Service updated successfully!");
+    }
+
+
 
 }
