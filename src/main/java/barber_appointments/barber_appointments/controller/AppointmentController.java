@@ -28,14 +28,14 @@ public class AppointmentController {
     }
 
     // Confirm appointment by token
-    @PostMapping("/appointments/confirm")
+    @GetMapping("/appointments/confirm")
     public ResponseEntity<String> confirmAppointment(@RequestParam String token) {
         appointmentService.confirmAppointment(token);
         return ResponseEntity.ok("Appointment confirmed successfully!");
     }
 
     // Cancel appointment by token
-    @PostMapping("/appointments/cancel")
+    @GetMapping("/appointments/cancel")
     public ResponseEntity<String> cancelAppointment(@RequestParam String token) {
         appointmentService.cancelAppointment(token);
         return ResponseEntity.ok("Appointment cancelled successfully!");

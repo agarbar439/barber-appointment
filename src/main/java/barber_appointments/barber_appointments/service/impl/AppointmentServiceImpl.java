@@ -14,6 +14,7 @@ import barber_appointments.barber_appointments.model.enums.AppointmentStatus;
 import barber_appointments.barber_appointments.repository.AppointmentRepository;
 import barber_appointments.barber_appointments.repository.BarberServiceRepository;
 import barber_appointments.barber_appointments.service.AppointmentService;
+import barber_appointments.barber_appointments.service.mail.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +34,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final BarberServiceRepository barberServiceRepository;
     private final AppointmentMapper appointmentMapper;
+    private final EmailService emailService;
 
     public AppointmentClientResponseDTO createAppointment(AppointmentRequestDTO request) {
         // Check for availability, save appointment, send confirmation email, etc.
@@ -70,14 +72,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointment.setDate(startTime.toLocalDate());
         appointment.setTime(startTime.toLocalTime());
 
-        // Send the confirmation email
-       // emailService.sendConfirmationEmail(savedAppointment);
-        /*Appointment savedAppointment = appointmentRepository.save(appointment);
-emailService.sendConfirmationEmail(savedAppointment);
-return savedAppointment;
-*/
         Appointment savedAppointment = appointmentRepository.save(appointment);
 
+        // Send confirmation email
+        emailService.sendAppointmentEmail(savedAppointment);
         return appointmentMapper.toClientResponseDTO(savedAppointment);
     }
 
@@ -113,6 +111,9 @@ return savedAppointment;
     public void deleteAppointment(Long id) {
        Appointment appointment = appointmentRepository.findById(id)
                .orElseThrow(() -> new ServiceNotFoundException("Appointment not found"));
+
+        // Send sendAdminCancellationEmail email
+        emailService.sendAdminCancellationEmail(appointment);
        appointmentRepository.delete(appointment);
     }
 
@@ -197,6 +198,8 @@ return savedAppointment;
             appointment.setStatus(AppointmentStatus.CANCELLED);
             appointmentRepository.save(appointment);
         }
+        // Send cancellation email
+        emailService.sendCancellationEmail(appointment);
     }
 
     // Client: Reschedule appointment by token
@@ -218,5 +221,8 @@ return savedAppointment;
             appointment.setTime(java.time.LocalTime.parse(request.getTime()));
             appointmentRepository.save(appointment);
         }
+
+        // Send rescheduling email
+        emailService.sendRescheduleEmail(appointment);
     }
 }
