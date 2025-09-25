@@ -9,7 +9,7 @@ Customers can book appointments without registering, while admins manage barberS
 
 Backend: Spring Boot (Web, Data JPA, Security, Mail)
 
-Frontend: React + TailwindCSS (with FullCalendar or React Big Calendar)
+Frontend: React + TailwindCSS 
 
 Database: MySQL
 
