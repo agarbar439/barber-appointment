@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:8080")
@@ -51,11 +50,6 @@ public class AppointmentController {
         return ResponseEntity.ok("Appointment rescheduled successfully!");
     }
 
-    // Get all the services
-    @GetMapping("/services")
-    public ResponseEntity<List<BarberServiceDTO>> getAllServices() {
-        return ResponseEntity.ok(barberServiceService.listAllBarberServices());
-    }
 
 
     // Admin role
@@ -91,28 +85,6 @@ public class AppointmentController {
         return ResponseEntity.ok("Appointment status updated successfully!");
 
     }
-
-    // Delete a service by ID (Admin only)
-    @DeleteMapping("/admin/services/{id}")
-    public ResponseEntity<Void> deleteService(@PathVariable Long id) {
-        barberServiceService.removeBarberService(id);
-        return ResponseEntity.noContent().build(); // 204 No Content
-    }
-
-    // Add a new service (Admin only)
-    @PostMapping("/admin/services")
-    public ResponseEntity<String> addService(@RequestBody BarberServiceDTO serviceDTO) {
-        barberServiceService.addBarberService(serviceDTO.getName(), serviceDTO.getDescription(), serviceDTO.getDurationMinutes(), serviceDTO.getPrice());
-        return ResponseEntity.ok("Service added successfully!");
-    }
-
-    // Update a service by ID (Admin only)
-    @PutMapping("/admin/services/{id}")
-    public ResponseEntity<String> updateService(@PathVariable Long id, @RequestBody BarberServiceDTO serviceDTO) {
-        barberServiceService.updateBarberService(id, serviceDTO.getName(), serviceDTO.getDescription(), serviceDTO.getDurationMinutes(), serviceDTO.getPrice());
-        return ResponseEntity.ok("Service updated successfully!");
-    }
-
 
 
 }

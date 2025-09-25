@@ -29,5 +29,6 @@ public class User {
 
     // User role, default ADMIN
     @Enumerated(EnumType.STRING)
-    private UserRole role = UserRole.ADMIN;
+    private  UserRole role = UserRole.ADMIN;
+
 }
