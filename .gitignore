@@ -6,8 +6,8 @@
 mvnw
 mvnw.cmd
 
-# --- Archivos de configuración sensible (¡MUY IMPORTANTE!) ---
-# Esto evita que subas tus contraseñas de la base de datos
+# --- Archivos de configuración sensible ---
+**/src/main/resources/application.properties
 **/src/main/resources/application-*.properties
 **/src/main/resources/application.yml
 .env
