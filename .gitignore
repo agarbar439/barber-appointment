@@ -1,0 +1,31 @@
+# --- Directorios de compilación (Maven/Gradle) ---
+**/target/
+**/build/
+**/bin/
+.mvn/
+mvnw
+mvnw.cmd
+
+# --- Archivos de configuración sensible (¡MUY IMPORTANTE!) ---
+# Esto evita que subas tus contraseñas de la base de datos
+**/src/main/resources/application-*.properties
+**/src/main/resources/application.yml
+.env
+
+# --- IntelliJ IDEA ---
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+# --- VS Code ---
+.vscode/
+
+# --- Archivos del Sistema ---
+.DS_Store
+Thumbs.db
+
+# --- Ayuda y Logs ---
+HELP.md
+*.log
