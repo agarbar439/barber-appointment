@@ -8,6 +8,7 @@ import barber_appointments.barber_appointments.service.AppointmentService;
 import barber_appointments.barber_appointments.service.BarberServiceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -56,6 +57,7 @@ public class AppointmentController {
 
     // Obtain all appointments (Admin only) with optional filters for status and date
     @GetMapping("/admin/appointments")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<AppointmentAdminResponseDTO>> getAppointmentsForAdmin(
             @RequestParam(required = false) String status,
             @RequestParam(required = false) String date
@@ -65,6 +67,7 @@ public class AppointmentController {
 
     // Get appointment by ID (Admin only)
     @GetMapping("/admin/appointments/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AppointmentAdminResponseDTO> getAppointmentById(@PathVariable Long id) {
         return appointmentService.getAppointmentById(id)
                 .map(ResponseEntity::ok)
@@ -73,6 +76,7 @@ public class AppointmentController {
 
     // Delete an appointment by ID (Admin only)
     @DeleteMapping("/admin/appointments/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         appointmentService.deleteAppointment(id);
         return ResponseEntity.noContent().build(); // 204 No Content
@@ -80,6 +84,7 @@ public class AppointmentController {
 
     // Change appointment status (Admin only)
     @PutMapping("/admin/appointments/{id}/status")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> changeAppointmentStatus(@PathVariable Long id, @RequestBody String status) {
         appointmentService.changeAppointmentStatus(id, status);
         return ResponseEntity.ok("Appointment status updated successfully!");

@@ -3,6 +3,7 @@ package barber_appointments.barber_appointments.security;
 import barber_appointments.barber_appointments.service.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.lang.NonNull;
@@ -34,25 +35,38 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
 
-        final String authHeader = request.getHeader("Authorization");
-        final String jwt;
+        String jwt = null;
         final String username;
 
-        // Si no hay token JWT, continúa con el siguiente filtro
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        // 1. Try to get the JWT from the Cookie named
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("accessToken".equals(cookie.getName())) {
+                    jwt = cookie.getValue();
+                }
+            }
+        }
+
+        // 2. If the JWT is still null, try to get it from the Authorization header
+        if (jwt == null) {
+            final String authHeader = request.getHeader("Authorization");
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                jwt = authHeader.substring(7);
+            }
+        }
+
+        // 3. If the JWT is still null, continue the filter chain without setting authentication
+        if (jwt == null) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // Extrae el token (después de "Bearer ")
-        jwt = authHeader.substring(7);
+        // 4. Try to extract the username from the JWT and validate it
         username = jwtUtil.extractUsername(jwt);
 
-        // Si hay username y no está autenticado
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
 
-            // Valida el token
             if (jwtUtil.isTokenValid(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,

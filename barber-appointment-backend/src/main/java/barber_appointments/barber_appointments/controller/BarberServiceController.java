@@ -4,6 +4,7 @@ import barber_appointments.barber_appointments.dto.BarberServiceDTO;
 import barber_appointments.barber_appointments.service.BarberServiceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class BarberServiceController {
 
     // Delete a service by ID (Admin only)
     @DeleteMapping("/admin/services/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteService(@PathVariable Long id) {
         barberServiceService.removeBarberService(id);
         return ResponseEntity.noContent().build(); // 204 No Content
@@ -31,6 +33,7 @@ public class BarberServiceController {
 
     // Add a new service (Admin only)
     @PostMapping("/admin/services")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> addService(@RequestBody BarberServiceDTO serviceDTO) {
         barberServiceService.addBarberService(serviceDTO.getName(), serviceDTO.getDescription(), serviceDTO.getDurationMinutes(), serviceDTO.getPrice());
         return ResponseEntity.ok("Service added successfully!");
@@ -38,6 +41,7 @@ public class BarberServiceController {
 
     // Update a service by ID (Admin only)
     @PatchMapping("/admin/services/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> updateService(@PathVariable Long id, @RequestBody BarberServiceDTO serviceDTO) {
         barberServiceService.updateBarberServicePartial(id, serviceDTO);
         return ResponseEntity.ok("Service updated successfully!");
